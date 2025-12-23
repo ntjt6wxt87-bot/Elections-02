@@ -1,3 +1,4 @@
+window.__APP_LOADED__ = true;
 window.addEventListener('DOMContentLoaded', function(){
 (function(){
   // ================= HOLIDAYS (Bahamas, dynamic with observed logic) =================

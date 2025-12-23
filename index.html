@@ -2,6 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+
+<!-- PWA / GitHub Pages: set a stable base for relative assets -->
+<base href="./" />
+<link rel="icon" href="data:," />
+<style>
+  /* Tiny boot screen so a missing JS/CSS doesn't look like "nothing" */
+  #bootStatus{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f6f8fb;color:#003366;font-family:Segoe UI,Arial,sans-serif;padding:20px;text-align:center}
+  #bootStatus .box{max-width:520px;background:#fff;border:1px solid #d9e2ec;border-radius:10px;padding:16px}
+  #bootStatus h2{margin:0 0 8px;font-size:18px}
+  #bootStatus p{margin:6px 0;font-size:13px;color:#334155}
+  #bootStatus code{font-size:12px}
+</style>
+<script>
+  // If JS doesn't load, show a helpful message instead of a blank page.
+  window.__APP_LOADED__ = false;
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const el = document.getElementById('bootStatus');
+      if (!el) return;
+      if (!window.__APP_LOADED__) {
+        el.querySelector('p').innerHTML =
+          'The page loaded, but the app scripts did not start. This is usually because <code>app.js</code> or <code>styles.css</code> is missing (404), or an old service-worker cache is serving an outdated file.<br><br>' +
+          'Quick fixes: hard refresh, then check that <code>app.js</code> and <code>styles.css</code> exist in the repo root and GitHub Pages is publishing from <code>/(root)</code>.';
+      } else {
+        el.remove();
+      }
+    }, 800);
+  });
+</script>
+
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Bahamas Election Calendar — Full Enhanced Dynamic Version\1
 <link rel="stylesheet" href="./styles.css" />
@@ -13,6 +43,8 @@
 
 </head>
 <body>
+
+<div id=\"bootStatus\"><div class=\"box\"><h2>Loading Election Calendar…</h2><p>Please wait a moment.</p><p style=\"opacity:.8\">If this stays blank, check for 404s on <code>app.js</code> / <code>styles.css</code>.</p></div></div>
 <header><h1>Bahamas Election Calendar</h1></header>
 <!-- Collapsible Instructions under header -->
 <div class="panel" style="max-width:1500px;margin:12px auto 0">
