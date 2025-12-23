@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bahamas Election Calendar — Full Enhanced Dynamic Version\1
+<link rel="stylesheet" href="./styles.css" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<meta name="theme-color" content="#003366" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="apple-touch-icon" href="./icons/icon-192.png" />
+
+</head>
+<body>
+<header><h1>Bahamas Election Calendar</h1></header>
+<!-- Collapsible Instructions under header -->
+<div class="panel" style="max-width:1500px;margin:12px auto 0">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h3>Instructions</h3>
+    <button class="btn" id="toggleInst" style="padding:4px 8px">Hide</button>
+  </div>
+  <div id="instBody" style="font-size:10.5px">
+    <ol style="margin:0;padding-left:18px">
+      <li>Select <b>General</b> or <b>Bye-Election</b>.</li>
+      <li>Click a field, then click a date in the calendar. Use <b>Show ranges</b> to visualize statutory windows. Overlaps render as a diagonal split.</li>
+      <li><b>Business days</b> exclude Sundays and public holidays. If a holiday falls on a weekend, its <b>observed weekday</b> is treated as the holiday for counting, and the weekend date counts only if it is the actual holiday (Saturday) rather than the observed weekday.</li>
+      <li>Anchor→Latest Return limits are calendar days (Constitution).</li>
+      <li>Reverse logic: if Polling Day is known, count back 26–30/31 business days to estimate Issue of Writ.</li>
+      <li>Printing: <b>Print Calendar</b> makes one landscape page per month (colors preserved). <b>Print Key Dates</b> is portrait with the key dates panel only.</li>
+    </ol>
+  </div>
+</div>
+<div class="container">
+  <div class="main">
+    <div class="tabs">
+      <div class="tab active" data-target="gen">General</div>
+      <div class="tab" data-target="bye">Bye-Election</div>
+    </div>
+    <section id="gen">
+      <div class="controls">
+        <div class="field"><label>Dissolution</label><input type="date" id="anchor_gen"></div>
+        <div class="field"><label>Issue of Writ</label><input type="date" id="issue_gen"></div>
+        <div class="field"><label>Public Notice of Election</label><input type="date" id="notice_gen"></div>
+        <div class="field"><label>Nomination Day</label><input type="date" id="nom_gen"></div>
+        <div class="field"><label>Public Notice of Nomination</label><input type="date" id="pubnom_gen"></div>
+        <div class="field"><label>Polling Day</label><input type="date" id="poll_gen"></div>
+        <div class="field"><label>Return of Writ</label><input type="date" id="ret_gen"></div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="ranges_gen">Show ranges</button>
+        <button class="btn alt" id="reset_gen">Reset</button>
+        <div class="monthNav">
+          <button class="btn" id="prev_gen">◀</button>
+          <span class="title" id="title_gen"></span>
+          <button class="btn" id="next_gen">▶</button>
+        </div>
+        <button class="btn" id="printCal_gen">Print Calendar</button>
+        <button class="btn" id="printKey_gen">Print Key Dates</button>
+      </div>
+      <div class="grid" id="grid_gen"></div>
+      <div id="multi_gen" style="display:none"></div>
+      <div class="panel">
+        <h3>Color Index</h3>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-anchor)"></span>Dissolution / Vacancy</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-latest)"></span>Latest Return (Constitutional)</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-writ)"></span>Return Range</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-notice)"></span>Public Notice of Election</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-nomination)"></span>Nomination</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-pubnom)"></span>Public Notice of Nomination</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-poll)"></span>Poll Range</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-register)"></span>Register (15)</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-advance)"></span>Advance (≤14)</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-overseas)"></span>Overseas Reg (≤7)</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Summary of Statutory Calculations</h3>
+        <div class="calc-summary" style="font-size:11px">
+          <table style="width:100%;border-collapse:collapse">
+            <tr><th style="border:1px solid #d9e2ec;padding:4px;background:#eef3f7;text-align:left">Provision</th><th style="border:1px solid #d9e2ec;padding:4px;background:#eef3f7;text-align:left">Calculation Rule</th></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Latest Return (Constitutional)</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>90 days</b> (General) — calendar days. <span style="color:#555">[Constitution, Art. 66]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Return of Writ</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>26–35 days</b> after Issue of Writ — business days. <span style="color:#555">[PEA s.33(2)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Public Notice of Election</b></td><td style="border:1px solid #d9e2ec;padding:4px">No later than <b>2 days</b> after Issue — business days. <span style="color:#555">[PEA s.35(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Nomination Day</b></td><td style="border:1px solid #d9e2ec;padding:4px"><b>5–8 days</b> after Notice of Election — business days. <span style="color:#555">[PEA s.35(2)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Public Notice of Nomination</b></td><td style="border:1px solid #d9e2ec;padding:4px">No later than <b>2 days</b> after Nomination — business days. <span style="color:#555">[PEA s.39]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Polling Day</b></td><td style="border:1px solid #d9e2ec;padding:4px"><b>26–31 days</b> after Issue — business days. <span style="color:#555">[PEA s.35(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Register Publication</b></td><td style="border:1px solid #d9e2ec;padding:4px">On the <b>15th day</b> after Issue — business days. <span style="color:#555">[PEA s.25(2)(a)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Advance Poll</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>14 days</b> of Issue — business days. <span style="color:#555">[PEA s.49C(2), s.54(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Overseas Registration</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>7 days</b> of Issue — business days. <span style="color:#555">[PEA s.49A(2)]</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div id="err_gen" class="err"></div>
+    </section>
+    <section id="bye" style="display:none">
+      <div class="controls">
+        <div class="field"><label>Vacancy</label><input type="date" id="anchor_bye"></div>
+        <div class="field"><label>Issue of Writ</label><input type="date" id="issue_bye"></div>
+        <div class="field"><label>Public Notice of Election</label><input type="date" id="notice_bye"></div>
+        <div class="field"><label>Nomination Day</label><input type="date" id="nom_bye"></div>
+        <div class="field"><label>Public Notice of Nomination</label><input type="date" id="pubnom_bye"></div>
+        <div class="field"><label>Polling Day</label><input type="date" id="poll_bye"></div>
+        <div class="field"><label>Return of Writ</label><input type="date" id="ret_bye"></div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="ranges_bye">Show ranges</button>
+        <button class="btn alt" id="reset_bye">Reset</button>
+        <div class="monthNav">
+          <button class="btn" id="prev_bye">◀</button>
+          <span class="title" id="title_bye"></span>
+          <button class="btn" id="next_bye">▶</button>
+        </div>
+        <button class="btn" id="printCal_bye">Print Calendar</button>
+        <button class="btn" id="printKey_bye">Print Key Dates</button>
+      </div>
+      <div class="grid" id="grid_bye"></div>
+      <div id="multi_bye" style="display:none"></div>
+      <div class="panel">
+        <h3>Color Index</h3>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-anchor)"></span>Dissolution / Vacancy</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-latest)"></span>Latest Return (Constitutional)</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-writ)"></span>Return Range</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-notice)"></span>Public Notice of Election</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-nomination)"></span>Nomination</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-pubnom)"></span>Public Notice of Nomination</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-poll)"></span>Poll Range</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-register)"></span>Register (15)</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-advance)"></span>Advance (≤14)</div>
+          <div class="legend-item"><span class="legend-color" style="background:var(--cal-overseas)"></span>Overseas Reg (≤7)</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Summary of Statutory Calculations</h3>
+        <div class="calc-summary" style="font-size:11px">
+          <table style="width:100%;border-collapse:collapse">
+            <tr><th style="border:1px solid #d9e2ec;padding:4px;background:#eef3f7;text-align:left">Provision</th><th style="border:1px solid #d9e2ec;padding:4px;background:#eef3f7;text-align:left">Calculation Rule</th></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Latest Return (Constitutional)</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>60 days</b> (Bye-Election) — calendar days. <span style="color:#555">[Constitution, Art. 67(3)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Return of Writ</b></td><td style="border:1px solid #d9e2ec;padding:4px">Practically <b>26–30 days</b> after Issue — business days (given polling day ≥26th day). <span style="color:#555">[PEA s.33(2); s.35(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Public Notice of Election</b></td><td style="border:1px solid #d9e2ec;padding:4px">No later than <b>2 days</b> after Issue — business days. <span style="color:#555">[PEA s.35(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Nomination Day</b></td><td style="border:1px solid #d9e2ec;padding:4px"><b>5–8 days</b> after Notice of Election — business days. <span style="color:#555">[PEA s.35(2)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Public Notice of Nomination</b></td><td style="border:1px solid #d9e2ec;padding:4px">No later than <b>2 days</b> after Nomination — business days. <span style="color:#555">[PEA s.39]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Polling Day</b></td><td style="border:1px solid #d9e2ec;padding:4px"><b>26–30 days</b> after Issue — business days. <span style="color:#555">[PEA s.35(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Register Publication</b></td><td style="border:1px solid #d9e2ec;padding:4px">On the <b>15th day</b> after Issue — business days. <span style="color:#555">[PEA s.25(2)(a)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Advance Poll</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>14 days</b> of Issue — business days. <span style="color:#555">[PEA s.49C(2), s.54(1)]</span></td></tr>
+            <tr><td style="border:1px solid #d9e2ec;padding:4px"><b>Overseas Registration</b></td><td style="border:1px solid #d9e2ec;padding:4px">Within <b>7 days</b> of Issue — business days. <span style="color:#555">[PEA s.49A(2)]</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div id="err_bye" class="err"></div>
+    </section>
+  </div>
+  <aside class="sidebar">
+    <div class="panel">
+      <h3>Key Dates & Ranges (<span id="which">General</span>)</h3>
+      <div id="summary" style="font-size:13px;"></div>
+    </div>
+  </aside>
+</div>
+<script src="./app.js"></script>
+</body>
+</html>
